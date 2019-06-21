@@ -16,7 +16,7 @@ const GET_USERS = gql`
         name
         description
         technology
-
+        society
         size
         Site
         startDate
@@ -55,12 +55,13 @@ class Listproject extends Component<any, any> {
               const nom = item[1];
               const descr = item[2];
               const techno = item[3];
-              const siz = item[4];
-              const site = item[5];
-              const endDate = item[6];
-              const startdate = item[7];
-              const stat = item[8];
-              const Prog = item[9];
+              const soci = item[4];
+              const siz = item[5];
+              const site = item[6];
+              const endDate = item[7];
+              const startdate = item[8];
+              const stat = item[9];
+              const Prog = item[10];
               item.push(
                 <Editproject
                   data={data}
@@ -68,6 +69,7 @@ class Listproject extends Component<any, any> {
                   nom={nom}
                   descr={descr}
                   techno={techno}
+                  soci={soci}
                   siz={siz}
                   endDate={endDate}
                   startdate={startdate}

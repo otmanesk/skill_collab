@@ -9,7 +9,7 @@ import Icon from '@material-ui/core/Icon';
 import { IconButton } from '@material-ui/core';
 import Divinput from '../../components/divinput';
 import moment from 'moment';
-const Update_PROJECT = gql`
+const Update_FORMATION = gql`
   mutation updateProject($id: String!, $projects: [ProjectInput]) {
     updateProject(id: $id, projects: $projects) {
       projects {
@@ -17,6 +17,7 @@ const Update_PROJECT = gql`
         name
         description
         technology
+        society
         size
         Site
         startDate
@@ -56,6 +57,7 @@ class editproject extends React.Component<any, any> {
       Site,
       technology,
       startDate,
+      society,
       EndDate,
       size,
       status,
@@ -87,7 +89,7 @@ class editproject extends React.Component<any, any> {
     console.log(resultdebut);
     return (
       <Mutation
-        mutation={Update_PROJECT}
+        mutation={Update_FORMATION}
         key={this.props.data.User.id}
         onCompleted={() => this.props.history.push('/projects')}
       >
@@ -124,19 +126,20 @@ class editproject extends React.Component<any, any> {
                                   status: status.value,
                                   technology: technology.value,
                                   startDate: startDate.value,
-
+                                  society: society.value,
                                   EndDate: EndDate.value,
                                   Progress: Progress.value
                                 }
                               }
+                            }).then(() => {
+                              close();
                             });
-
                             name.value = '';
                             description.value = '';
                             Site.value = '';
                             technology.value = '';
                             startDate.value = '';
-
+                            society.value = '';
                             EndDate.value = '';
                             status.value = '';
                             size.value = '';
@@ -172,7 +175,13 @@ class editproject extends React.Component<any, any> {
                               technology = node;
                             }}
                           />
-
+                          <Divinput
+                            name="society"
+                            defaultvalue={this.props.soci}
+                            node={node => {
+                              society = node;
+                            }}
+                          />
                           <Divinput name="size" defaultvalue={this.props.siz} />
                           <Divinput
                             name="size"
@@ -196,6 +205,31 @@ class editproject extends React.Component<any, any> {
                             }}
                           />
 
+                          <div className="form-group">
+                            <label htmlFor="startDate">startDate:</label>
+                            <input
+                              type="date"
+                              name="startDate"
+                              ref={node => {
+                                startDate = node;
+                              }}
+                              placeholder="startDate"
+                              defaultValue={resultdebut}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="EndDate">EndDate:</label>
+                            <input
+                              type="date"
+                              className="form-control"
+                              name="EndDate"
+                              ref={node => {
+                                EndDate = node;
+                              }}
+                              placeholder="EndDate"
+                              defaultValue={resultfin}
+                            />
+                          </div>
                           <Button color="primary" round type="submit">
                             Edit{' '}
                           </Button>

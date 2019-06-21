@@ -1,5 +1,6 @@
 import { Grid, Paper } from '@material-ui/core';
-import Pie from '../../components/Charts/Pie/Pie';
+
+import { Table } from '../../components';
 import { Button, ItemGrid, RegularCard } from '../../components';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
@@ -363,7 +364,32 @@ class Skills extends React.Component<any, any> {
                           i.splice(5, 3);
                         });
                         console.log(array);
-                        return <Pie />;
+                        return (
+                          <Paper>
+                            <Table
+                              tableHeaderColor="warning"
+                              tableData={this.props.array.map(item =>
+                                Object.keys(item).map(function(_) {
+                                  return item[_];
+                                })
+                              )}
+                              headRows={[
+                                {
+                                  id: '0',
+                                  numeric: false,
+                                  disablePadding: true,
+                                  label: 'name'
+                                },
+                                {
+                                  id: '1',
+                                  numeric: false,
+                                  disablePadding: true,
+                                  label: 'value'
+                                }
+                              ]}
+                            />
+                          </Paper>
+                        );
                       }}
                     </Query>
                   </Grid>

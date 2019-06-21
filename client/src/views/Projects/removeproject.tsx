@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-const DELETE_PROJECT = gql`
+const DELETE_FORMATION = gql`
   mutation deleteProject($id: String!, $projects: [ProjectInput]) {
     deleteProject(id: $id, projects: $projects) {
       id
@@ -24,7 +24,7 @@ class removeproject extends React.Component<any, any> {
 
     return (
       <Mutation
-        mutation={DELETE_PROJECT}
+        mutation={DELETE_FORMATION}
         key={this.props.data.User.id}
         onCompleted={() => this.props.history.push('/projects')}
       >
