@@ -10,6 +10,7 @@ type User {
   gender: String
   birthday: Date
   email :  String
+  education : [Education]
   formations : [ Formation ]
   projects:[Project]
   formationsfollowed:[ Formation ]
@@ -31,6 +32,23 @@ input ObjectifInput{
   status: String
   EndDate: Date
   Progress: String
+}
+type Education{
+  id: String,
+  school: String,
+  diploma: String,
+  university: String,
+  trainings: String,
+  certification : String
+}
+input EducationInput{
+
+  id: String,
+  school: String,
+  diploma: String,
+  university: String,
+  trainings: String,
+  certification : String
 }
 type Formation{
       id: String
@@ -111,6 +129,18 @@ title: String,
       start: String,
       end: String
 }
+
+type Skill{
+  id: String,
+  name : String,
+  value : String
+}
+input SkillInput{
+  id: String,
+  name: String,
+  value: String
+}
+
 type Query {
   allUsers: [User!]!
   User(id :String):User
@@ -175,6 +205,18 @@ type Mutation {
 
     
       deleteProject(id:String!,projects:[ProjectInput]):User!
+      addEducation(
+        id: String,
+        school: String,
+        diploma: String,
+        university: String,
+        trainings: String,
+        certification : String,
+        education : [EducationInput]):User!
+  
+        updateEducation(id:String!, education:[EducationInput]):User!
+  
+        deleteEducation(id:String!, education:[EducationInput]):User!
   
   
       addCertification( 
@@ -210,7 +252,13 @@ type Mutation {
         
           deleteObjectif(id:String!,objectifs:[ObjectifInput]):User!
       
-          
+          addSkill(
+            id: String,
+            name: String,
+            value: String,
+            skills:[SkillInput]):User!,
+            updateSkill(id:String!,skills:[SkillInput]):User!,
+            deleteSkill(id:String!,skills:[SkillInput]):User!  
         addCalendar( 
           id:String!, 
           name: String,

@@ -80,11 +80,25 @@ const UserSchema = new Schema({
       Progress: String
     }
   ],
-
+  role: [
+    {
+      type: String,
+      experience: String
+    }
+  ],
   skills: [
     {
       name: String,
-      value: Number
+      value: String
+    }
+  ],
+  education: [
+    {
+      school: String,
+      university: String,
+      diploma: String,
+      trainings: String,
+      certification: String
     }
   ],
   calendar: [
@@ -93,6 +107,12 @@ const UserSchema = new Schema({
       allDay: String,
       start: Date,
       end: Date
+    }
+  ],
+  skills: [
+    {
+      name: String,
+      value: Number
     }
   ]
 });

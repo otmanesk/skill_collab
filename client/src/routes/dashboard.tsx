@@ -1,9 +1,19 @@
-import { Dashboard, Person } from '@material-ui/icons';
+import {
+  Dashboard,
+  Person,
+  Code,
+  Equalizer,
+  Assignment,
+  School,
+  Event,
+  ShowChart
+} from '@material-ui/icons';
 import DashboardPage from '../views/Dashboard/Dashboard';
 
 import Formation from '../views/Formation/Formation';
 import Project from '../views/Projects/Projects';
 import Skill from '../views/Skill/Skill';
+import Education from '../views/Education/Education';
 import Certifications from '../views/Certifications/Certifications';
 import Objectifs from '../views/Objectifs/Objectifs';
 import Calendar from '../views/Calendar/Data';
@@ -21,21 +31,21 @@ const dashboardRoutes = [
     path: '/formation',
     sidebarName: 'Formation',
     navbarName: 'Formation',
-    icon: Person,
+    icon: Assignment,
     component: Formation
   },
   {
     path: '/projects',
     sidebarName: 'Projects',
     navbarName: 'Projects',
-    icon: Person,
+    icon: Equalizer,
     component: Project
   },
   {
     path: '/skills',
     sidebarName: 'Skills',
     navbarName: 'Skills',
-    icon: Person,
+    icon: Code,
     component: Skill
   },
   {
@@ -49,14 +59,21 @@ const dashboardRoutes = [
     path: '/objectifs',
     sidebarName: 'Objectifs',
     navbarName: 'Objectifs',
-    icon: Person,
+    icon: ShowChart,
     component: Objectifs
+  },
+  {
+    path: '/education',
+    sidebarName: 'Education',
+    navbarName: 'Education',
+    icon: School,
+    component: Education
   },
   {
     path: '/Calendar',
     sidebarName: 'Calendar',
     navbarName: 'Calendar',
-    icon: Person,
+    icon: Event,
     component: Calendar
   },
   {

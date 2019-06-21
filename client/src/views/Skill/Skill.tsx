@@ -1,74 +1,61 @@
 import { Grid, Paper } from '@material-ui/core';
+import Pie from '../../components/Charts/Pie/Pie';
 import { Button, ItemGrid, RegularCard } from '../../components';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Modal from 'react-awesome-modal';
 import { connect } from 'react-redux';
 import { Query, Mutation } from 'react-apollo';
-import { gql } from 'apollo-boost';
-import Modal from 'react-awesome-modal';
-import { Table } from '../../components';
 import Popup from 'reactjs-popup';
 
-const DELETE_FORMATION = gql`
-  mutation deleteFormation($id: String!, $formations: [FormationInput]) {
-    deleteFormation(id: $id, formations: $formations) {
+import { gql } from 'apollo-boost';
+
+const DELETE_SKILL = gql`
+  mutation deleteSkill($id: String!, $skills: [SkillInput]) {
+    deleteSkill(id: $id, skills: $skills) {
       id
       name
     }
   }
 `;
-const Update_FORMATION = gql`
-  mutation updateFormation($id: String!, $formations: [FormationInput]) {
-    updateFormation(id: $id, formations: $formations) {
-      formations {
+const Update_SKILL = gql`
+  mutation updateSkill($id: String!, $skills: [SkillInput]) {
+    updateSkill(id: $id, skills: $skills) {
+      skills {
         id
         name
-        Type
-        Site
-        Rank
-        Formateur
-        startDate
-        EndDate
+        value
       }
     }
   }
 `;
+
 const GET_USERS = gql`
   query User($Id: String) {
     User(id: $Id) {
       id
-      formations {
+      skills {
         id
         name
-        Type
-        Site
-        Rank
-        Formateur
-        startDate
-        EndDate
+        value
       }
     }
   }
 `;
 
-const ADD_FORMATION = gql`
-  mutation addFormation($id: String!, $formations: [FormationInput]) {
-    addFormation(id: $id, formations: $formations) {
-      formations {
+const ADD_SKILL = gql`
+  mutation addSkill($id: String!, $skills: [SkillInput]) {
+    addSkill(id: $id, skills: $skills) {
+      skills {
         id
         name
-        Type
-        Site
-        Rank
-        Formateur
-        startDate
-        EndDate
+        value
       }
     }
   }
 `;
 
-class Formation extends Component<any, any> {
+class Skills extends React.Component<any, any> {
   static propTypes: {
     auth: PropTypes.Validator<object>;
   };
@@ -90,16 +77,15 @@ class Formation extends Component<any, any> {
       visible: false
     });
   }
-
   render() {
-    let name, Type, Site, Rank, startDate, Formateur, EndDate;
-
+    let name, value;
     return (
       <div>
         <Grid container>
-          <ItemGrid xs={12} sm={12} md={12}>
+          <ItemGrid xs={12} sm={12} md={8}>
             <RegularCard
-              cardTitle="Edit Formation"
+              cardTitle="Edit Skills"
+              cardSubtitle="Add your Skills"
               content={
                 <div>
                   <Grid item xs={12} container>
@@ -112,20 +98,20 @@ class Formation extends Component<any, any> {
                         if (error) return `Error! ${error.message}`;
                         return (
                           <Mutation
-                            mutation={ADD_FORMATION}
+                            mutation={ADD_SKILL}
                             key={data.User.id}
                             onCompleted={() =>
-                              this.props.history.push(`/Formation`)
+                              this.props.history.push(`/Skills`)
                             }
                           >
-                            {(addFormation, { loading, error }) => (
+                            {(addSkill, { loading, error }) => (
                               <>
                                 <Button
                                   color="primary"
                                   round
                                   onClick={() => this.openModal()}
                                 >
-                                  Add Formation
+                                  Add Skills
                                 </Button>
                                 <Modal
                                   visible={this.state.visible}
@@ -140,30 +126,17 @@ class Formation extends Component<any, any> {
                                         <form
                                           onSubmit={e => {
                                             e.preventDefault();
-                                            addFormation({
+                                            addSkill({
                                               variables: {
                                                 id: data.User.id,
-                                                formations: {
+                                                skills: {
                                                   name: name.value,
-                                                  Type: Type.value,
-                                                  Site: Site.value,
-                                                  Rank: Rank.value,
-                                                  startDate: startDate.value,
-                                                  Formateur: Formateur.value,
-                                                  EndDate: EndDate.value
+                                                  value: value.value
                                                 }
-                                              },
-                                              refetchQueries: [
-                                                { query: GET_USERS }
-                                              ]
+                                              }
                                             });
                                             name.value = '';
-                                            Type.value = '';
-                                            Site.value = '';
-                                            Rank.value = '';
-                                            startDate.value = '';
-                                            Formateur.value = '';
-                                            EndDate.value = '';
+                                            value.value = '';
                                           }}
                                         >
                                           <br />
@@ -180,90 +153,25 @@ class Formation extends Component<any, any> {
                                             />
                                           </div>
                                           <div className="form-group">
-                                            <label htmlFor="Type">Type:</label>
+                                            <label htmlFor="Type">Value:</label>
                                             <input
                                               type="text"
                                               className="form-control"
-                                              name="Type"
+                                              name="Value"
                                               ref={node => {
-                                                Type = node;
+                                                value = node;
                                               }}
-                                              placeholder="Type"
+                                              placeholder="Value"
                                             />
                                           </div>
 
-                                          <div className="form-group">
-                                            <label htmlFor="Site">Site:</label>
-                                            <input
-                                              className="form-control"
-                                              name="Site"
-                                              ref={node => {
-                                                Site = node;
-                                              }}
-                                              placeholder="Site"
-                                            />
-                                          </div>
-                                          <div className="form-group">
-                                            <label htmlFor="Rank">Rank:</label>
-                                            <input
-                                              type="text"
-                                              className="form-control"
-                                              name="Rank"
-                                              ref={node => {
-                                                Rank = node;
-                                              }}
-                                              placeholder="Rank"
-                                            />
-                                          </div>
-                                          <div className="form-group">
-                                            <label htmlFor="startDate">
-                                              startDate:
-                                            </label>
-                                            <input
-                                              type="date"
-                                              className="form-control"
-                                              name="startDate"
-                                              ref={node => {
-                                                startDate = node;
-                                              }}
-                                              placeholder="startDate"
-                                            />
-                                          </div>
-                                          <div className="form-group">
-                                            <label htmlFor="Formateur">
-                                              Formateur:
-                                            </label>
-                                            <input
-                                              type="text"
-                                              className="form-control"
-                                              name="Formateur"
-                                              ref={node => {
-                                                Formateur = node;
-                                              }}
-                                              placeholder="Formateur"
-                                            />
-                                          </div>
-                                          <div className="form-group">
-                                            <label htmlFor="EndDate">
-                                              EndDate:
-                                            </label>
-                                            <input
-                                              type="date"
-                                              className="form-control"
-                                              name="EndDate"
-                                              ref={node => {
-                                                EndDate = node;
-                                              }}
-                                              placeholder="EndDate"
-                                            />
-                                          </div>
                                           <Button
                                             color="primary"
                                             round
                                             type="submit"
                                             onClick={() => this.closeModal()}
                                           >
-                                            Add Formation
+                                            Add Skills
                                           </Button>
                                           <Button
                                             color="primary"
@@ -296,7 +204,7 @@ class Formation extends Component<any, any> {
                       {({ loading, error, data }) => {
                         if (loading) return 'Loading...';
                         if (error) return `Error! ${error.message}`;
-                        var fo = data.User.formations;
+                        var fo = data.User.skills;
 
                         var array = fo.map(item =>
                           Object.keys(item).map(function(_) {
@@ -304,21 +212,18 @@ class Formation extends Component<any, any> {
                           })
                         );
                         array.map(item => {
-                          const id = item[0];
-                          const nom = item[1];
-                          const rank = item[2];
-                          const type = item[3];
-                          const site = item[4];
-                          const formateur = item[5];
+                          let id = item[0];
+                          let nom = item[1];
+                          let value = item[2];
                           item.push(
                             <Mutation
-                              mutation={Update_FORMATION}
+                              mutation={Update_SKILL}
                               key={data.User.id}
                               onCompleted={() =>
-                                this.props.history.push('/Formation')
+                                this.props.history.push('/Skills')
                               }
                             >
-                              {(updateFormation, { loading, error }) => (
+                              {(updateSkills, { loading, error }) => (
                                 <>
                                   <Popup
                                     open={false}
@@ -339,32 +244,21 @@ class Formation extends Component<any, any> {
                                               <form
                                                 onSubmit={e => {
                                                   e.preventDefault();
-                                                  updateFormation({
+                                                  updateSkills({
                                                     variables: {
                                                       id: data.User.id,
-                                                      formations: {
+                                                      skills: {
                                                         id: id,
                                                         name: name.value,
-                                                        Type: Type.value,
-                                                        Site: Site.value,
-                                                        Rank: Rank.value,
-                                                        startDate:
-                                                          startDate.value,
-                                                        Formateur:
-                                                          Formateur.value,
-                                                        EndDate: EndDate.value
+                                                        value: value.value
                                                       }
                                                     }
                                                   }).then(() => {
                                                     close();
                                                   });
                                                   name.value = '';
-                                                  Type.value = '';
-                                                  Site.value = '';
-                                                  Rank.value = '';
-                                                  startDate.value = '';
-                                                  Formateur.value = '';
-                                                  EndDate.value = '';
+                                                  value.value = '';
+
                                                   close();
                                                 }}
                                               >
@@ -385,90 +279,18 @@ class Formation extends Component<any, any> {
                                                   />
                                                 </div>
                                                 <div className="form-group">
-                                                  <label htmlFor="Type">
-                                                    Type:
+                                                  <label htmlFor="value">
+                                                    value :
                                                   </label>
                                                   <input
                                                     type="text"
                                                     className="form-control"
-                                                    name="Type"
+                                                    name="value"
                                                     ref={node => {
-                                                      Type = node;
+                                                      value = node;
                                                     }}
-                                                    placeholder="Type"
-                                                    defaultValue={type.toString()}
-                                                  />
-                                                </div>
-                                                <div className="form-group">
-                                                  <label htmlFor="Site">
-                                                    Site:
-                                                  </label>
-                                                  <input
-                                                    className="form-control"
-                                                    name="Site"
-                                                    ref={node => {
-                                                      Site = node;
-                                                    }}
-                                                    placeholder="Site"
-                                                    defaultValue={site.toString()}
-                                                  />
-                                                </div>
-                                                <div className="form-group">
-                                                  <label htmlFor="Rank">
-                                                    Rank:
-                                                  </label>
-                                                  <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    name="Rank"
-                                                    ref={node => {
-                                                      Rank = node;
-                                                    }}
-                                                    placeholder="Rank"
-                                                    defaultValue={rank.toString()}
-                                                  />
-                                                </div>
-                                                <div className="form-group">
-                                                  <label htmlFor="Formateur">
-                                                    Formateur:
-                                                  </label>
-                                                  <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    name="Formateur"
-                                                    ref={node => {
-                                                      Formateur = node;
-                                                    }}
-                                                    placeholder="Formateur"
-                                                    defaultValue={formateur.toString()}
-                                                  />
-                                                </div>
-                                                <div className="form-group">
-                                                  <label htmlFor="startDate">
-                                                    startDate:
-                                                  </label>
-                                                  <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    name="startDate"
-                                                    ref={node => {
-                                                      startDate = node;
-                                                    }}
-                                                    placeholder="startDate"
-                                                  />
-                                                </div>
-                                                <div className="form-group">
-                                                  <label htmlFor="EndDate">
-                                                    EndDate:
-                                                  </label>
-                                                  <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    name="EndDate"
-                                                    ref={node => {
-                                                      EndDate = node;
-                                                    }}
-                                                    placeholder="EndDate"
+                                                    placeholder="value"
+                                                    defaultValue={value.toString()}
                                                   />
                                                 </div>
                                                 <Button
@@ -498,21 +320,21 @@ class Formation extends Component<any, any> {
                               )}
                             </Mutation>,
                             <Mutation
-                              mutation={DELETE_FORMATION}
+                              mutation={DELETE_SKILL}
                               key={data.User.id}
                               onCompleted={() =>
-                                this.props.history.push('/Formation')
+                                this.props.history.push('/skills')
                               }
                             >
-                              {(deleteFormation, { loading, error }) => (
+                              {(deleteSkills, { loading, error }) => (
                                 <div>
                                   <form
                                     onSubmit={e => {
                                       e.preventDefault();
-                                      deleteFormation({
+                                      deleteSkills({
                                         variables: {
                                           id: data.User.id,
-                                          formations: {
+                                          skills: {
                                             id: id.toString()
                                           }
                                         }
@@ -534,21 +356,14 @@ class Formation extends Component<any, any> {
                             </Mutation>
                           );
                         });
-
                         array.map(i => {
                           i.splice(0, 1);
                         });
                         array.map(i => {
                           i.splice(5, 3);
                         });
-                        return (
-                          <Paper>
-                            <Table
-                              tableHeaderColor="warning"
-                              tableData={array}
-                            />
-                          </Paper>
-                        );
+                        console.log(array);
+                        return <Pie />;
                       }}
                     </Query>
                   </Grid>
@@ -562,11 +377,12 @@ class Formation extends Component<any, any> {
   }
 }
 
-Formation.propTypes = {
+Skills.propTypes = {
   auth: PropTypes.object.isRequired
 };
+
 const mapStateToProps = state => ({
   auth: state.auth
 });
 
-export default connect(mapStateToProps)(Formation);
+export default connect(mapStateToProps)(Skills);

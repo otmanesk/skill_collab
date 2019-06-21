@@ -7,15 +7,15 @@ import PropTypes from 'prop-types';
 import { IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-const DELETE_PROJECT = gql`
-  mutation deleteProject($id: String!, $projects: [ProjectInput]) {
-    deleteProject(id: $id, projects: $projects) {
+const DELETE_EDUCATION = gql`
+  mutation deleteEducation($id: String!, $education: [EducationInput]) {
+    deleteEducation(id: $id, education: $education) {
       id
       name
     }
   }
 `;
-class removeproject extends React.Component<any, any> {
+class removeEducation extends React.Component<any, any> {
   static propTypes: {
     auth: PropTypes.Validator<object>;
   };
@@ -24,19 +24,19 @@ class removeproject extends React.Component<any, any> {
 
     return (
       <Mutation
-        mutation={DELETE_PROJECT}
+        mutation={DELETE_EDUCATION}
         key={this.props.data.User.id}
-        onCompleted={() => this.props.history.push('/projects')}
+        onCompleted={() => this.props.history.push('/education')}
       >
-        {(deleteProject, { loading, error }) => (
+        {(deleteEducation, { loading, error }) => (
           <div>
             <form
               onSubmit={e => {
                 e.preventDefault();
-                deleteProject({
+                deleteEducation({
                   variables: {
                     id: this.props.data.User.id,
-                    projects: {
+                    education: {
                       id: id.toString()
                     }
                   }
@@ -55,11 +55,11 @@ class removeproject extends React.Component<any, any> {
     );
   }
 }
-removeproject.propTypes = {
+removeEducation.propTypes = {
   auth: PropTypes.object.isRequired
 };
 const mapStateToProps = state => ({
   auth: state.auth
 });
 
-export default connect(mapStateToProps)(removeproject);
+export default connect(mapStateToProps)(removeEducation);

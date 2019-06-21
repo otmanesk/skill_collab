@@ -1,87 +1,139 @@
-import { Grid, withStyles } from '@material-ui/core';
-import {
-  Accessibility,
-  ContentCopy,
-  DateRange,
-  InfoOutline,
-  LocalOffer,
-  Store,
-  Update,
-  Warning
-} from '@material-ui/icons';
-import dashboardStyle from '../../assets/jss/material-dashboard-react/dashboardStyle';
-import { ItemGrid, StatsCard } from '../../components';
-import * as React from 'react';
+import { Grid, withStyles, Paper } from '@material-ui/core';
 
+import dashboardStyle from '../../assets/jss/material-dashboard-react/dashboardStyle';
+import { ItemGrid, RegularCard, Snackbar } from '../../components';
+import * as React from 'react';
+import { Query, Mutation } from 'react-apollo';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+
+import { gql } from 'apollo-boost';
+import { Table, Button } from '../../components';
+import Training from '../../components/stats/Trainings';
+import Display from '../../components/react-images/Display';
+import Activity from '../../components/Charts/Activity/Activity';
+import RangeSliderBar from '../../components/rangeSliderBar/RangeSliderBar';
+import Bar from '../../components/Charts/Bar/Bar';
+import SpiderWeb from '../../components/Charts/Spiderweb/Spiderweb';
+import Donut from '../../components/Charts/Donut/Donut';
+import Facet from '../../components/Facet/Facet';
+import FacetHeader from '../../components/Facet/FacetHeader';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
-import Formation from './Formation';
+import Popup from 'reactjs-popup';
+import Formation from '../Formation/Formation';
 import Users from './Users';
 
-class Dashboard extends React.Component<any, any> {
+const ADD_TRAINING = gql`
+  mutation addTrainingFollowed(
+    $id: String!
+    $trainingsFollowed: [TrainingInput]
+  ) {
+    addTrainingFollowed(id: $id, trainingsFollowed: $trainingsFollowed) {
+      trainingsFollowed {
+        id
+        name
+        Type
+        Site
+        Rank
+        former
+        startDate
+        EndDate
+      }
+    }
+  }
+`;
+const GET_USERS = gql`
+  {
+    allUsers {
+      id
+      name
+      username
+      email
+      trainings {
+        id
+        name
+        Type
+        Site
+        former
+      }
+      trainingsFollowed {
+        id
+        name
+        Type
+        Site
+        former
+      }
+    }
+  }
+`;
+
+type Positions = 'tl' | 'tc' | 'tr' | 'bl' | 'bc' | 'br';
+
+interface Props {
+  classes: {
+    successText: string;
+    upArrowCardCategory: string;
+  };
+}
+
+class Dashboard extends React.Component<Props & any, any> {
   static propTypes: {
     auth: PropTypes.Validator<object>;
   };
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      tc: false
+    };
+    this.showNotification = this.showNotification.bind(this);
+  }
 
   render() {
-    if (this.props.auth.user.role === 'manager') {
-      return (
-        <div>
-          <Grid container>
-            <ItemGrid xs={12} sm={6} md={3}>
-              <StatsCard
-                icon={ContentCopy}
-                iconColor="orange"
-                title="Used Space"
-                description="49/50"
-                small="GB"
-                statIcon={Warning}
-                statIconColor="danger"
-                statLink={{ text: 'Get More Space...', href: '#pablo' }}
-              />
-            </ItemGrid>
-            <ItemGrid xs={12} sm={6} md={3}>
-              <StatsCard
-                icon={Store}
-                iconColor="green"
-                title="Revenue"
-                description="$34,245"
-                statIcon={DateRange}
-                statText="Last 24 Hours"
-              />
-            </ItemGrid>
-            <ItemGrid xs={12} sm={6} md={3}>
-              <StatsCard
-                icon={InfoOutline}
-                iconColor="red"
-                title="Fixed Issues"
-                description="75"
-                statIcon={LocalOffer}
-                statText="Tracked from Github"
-              />
-            </ItemGrid>
-            <ItemGrid xs={12} sm={6} md={3}>
-              <StatsCard
-                icon={Accessibility}
-                iconColor="blue"
-                title="Followers"
-                description="+245"
-                statIcon={Update}
-                statText="Just Updated"
-              />
-            </ItemGrid>
-          </Grid>
+    return (
+      <div>
+        <Grid container>
+          <ItemGrid xs={12} sm={12} md={12}>
+            <Display />
+          </ItemGrid>
+        </Grid>
 
+        <Grid container>
+          <ItemGrid xs={11} sm={11} md={4}>
+            <Activity />
+          </ItemGrid>
+          <ItemGrid xs={12} sm={12} md={4}>
+            <SpiderWeb />
+          </ItemGrid>
+          <ItemGrid xs={12} sm={12} md={4}>
+            <Bar />
+          </ItemGrid>
           <Grid container>
-            <Formation />
-            <Users />
+            <Facet>
+              <FacetHeader title="Ranking">
+                <RangeSliderBar />
+              </FacetHeader>
+            </Facet>
           </Grid>
-        </div>
-      );
-    } else {
-      return <div />;
-    }
+        </Grid>
+        <Grid container>
+          <Training />
+        </Grid>
+
+        <Grid container>
+          <Formation />
+          <Users />
+        </Grid>
+      </div>
+    );
+  }
+
+  private showNotification(place: Positions) {
+    // @ts-ignore
+    this.setState({ [place]: true });
+
+    // @ts-ignore
+    setTimeout(() => this.setState({ [place]: false }), 6000);
   }
 }
 Dashboard.propTypes = {

@@ -17,7 +17,7 @@ const GET_USERS = gql`
         name
         description
         technology
-        society
+
         size
         Site
         startDate
@@ -36,7 +36,7 @@ const ADD_PROJECT = gql`
         name
         description
         technology
-        society
+
         size
         Site
         startDate
@@ -76,7 +76,6 @@ class addproject extends React.Component<any, any> {
       Site,
       technology,
       startDate,
-      society,
       EndDate,
       size,
       status,
@@ -127,7 +126,7 @@ class addproject extends React.Component<any, any> {
                                       status: status.value,
                                       technology: technology.value,
                                       startDate: startDate.value,
-                                      society: society.value,
+
                                       EndDate: EndDate.value,
                                       Progress: Progress.value
                                     }
@@ -138,7 +137,7 @@ class addproject extends React.Component<any, any> {
                                 Site.value = '';
                                 technology.value = '';
                                 startDate.value = '';
-                                society.value = '';
+
                                 EndDate.value = '';
                                 status.value = '';
                                 size.value = '';
@@ -197,18 +196,6 @@ class addproject extends React.Component<any, any> {
                                 />
                               </div>
 
-                              <div className="form-group">
-                                <label htmlFor="society">society:</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  name="society"
-                                  ref={node => {
-                                    society = node;
-                                  }}
-                                  placeholder="society"
-                                />
-                              </div>
                               <div className="form-group">
                                 <label htmlFor="size">size:</label>
                                 <input

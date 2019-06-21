@@ -131,6 +131,58 @@ module.exports = {
         if (err) return console.log(err);
       });
     },
+    addEducation: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      user.education.push({
+        school: a.education[0].school,
+        diploma: a.education[0].diploma,
+        university: a.education[0].university,
+        certification: a.education[0].certification,
+        trainings: a.education[0].trainings
+      });
+      user.save();
+      return user;
+    },
+    deleteEducation: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      var lists;
+      user.education.filter(x => {
+        if (x.id != a.education[0].id) {
+          lists = x;
+        }
+      });
+      user.education = lists;
+      user.save();
+      return user;
+    },
+    updateEducation: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+
+      user.education.map(x => {
+        if (x.id == a.education[0].id) {
+          x.school = a.education[0].school;
+          x.university = a.education[0].university;
+          x.diploma = a.education[0].diploma;
+          x.trainings = a.education[0].trainings;
+          x.certification = a.education[0].certification;
+        }
+      });
+      return User.replaceOne({ _id: args.id }, user, function(err) {
+        if (err) return console.log(err);
+      });
+    },
     addProject: async (parent, args, { User }) => {
       var user;
       await User.findById(args.id, function(err, pro) {
@@ -392,6 +444,53 @@ module.exports = {
           x.title = a.calendar[0].title;
           x.start = a.calendar[0].start;
           x.end = a.calendar[0].end;
+        }
+      });
+      user.save();
+      return user;
+    },
+    addSkill: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      user.skills.push({
+        name: a.skills[0].name,
+        value: a.skills[0].value
+      });
+      user.save();
+
+      return user;
+    },
+    deleteSkill: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+
+      var lists;
+      user.skills.filter(x => {
+        if (x.id != a.skills[0].id) {
+          lists = x;
+        }
+      });
+      user.skills = lists;
+      user.save();
+
+      return user;
+    },
+    updateSkill: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      user.skills.map(x => {
+        if (x.id == a.skills[0].id) {
+          x.name = a.skills[0].name;
+          x.value = a.skills[0].value;
         }
       });
       user.save();

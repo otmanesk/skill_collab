@@ -7,27 +7,23 @@ import PropTypes from 'prop-types';
 import Popup from 'reactjs-popup';
 import Icon from '@material-ui/core/Icon';
 import { IconButton } from '@material-ui/core';
-import Divinput from '../../components/divinput';
+import DivInput from '../../components/divinput';
 import moment from 'moment';
-const Update_PROJECT = gql`
-  mutation updateProject($id: String!, $projects: [ProjectInput]) {
-    updateProject(id: $id, projects: $projects) {
-      projects {
+const Update_EDUCATION = gql`
+  mutation updateEducation($id: String!, $education: [EducationInput]) {
+    updateEducation(id: $id, education: $education) {
+      education {
         id
-        name
-        description
-        technology
-        size
-        Site
-        startDate
-        EndDate
-        status
-        Progress
+        school
+        diploma
+        university
+        trainings
+        certification
       }
     }
   }
 `;
-class editproject extends React.Component<any, any> {
+class editEducation extends React.Component<any, any> {
   static propTypes: {
     auth: PropTypes.Validator<object>;
   };
@@ -51,15 +47,7 @@ class editproject extends React.Component<any, any> {
   }
 
   render() {
-    let name,
-      description,
-      Site,
-      technology,
-      startDate,
-      EndDate,
-      size,
-      status,
-      Progress;
+    let school, diploma, university, trainings, certification;
     var datefin = new Date(
       moment.unix(this.props.endDate / 1000).format('YYYY-MM-DD')
     ).toLocaleDateString('en-GB', {
@@ -87,11 +75,11 @@ class editproject extends React.Component<any, any> {
     console.log(resultdebut);
     return (
       <Mutation
-        mutation={Update_PROJECT}
+        mutation={Update_EDUCATION}
         key={this.props.data.User.id}
-        onCompleted={() => this.props.history.push('/projects')}
+        onCompleted={() => this.props.history.push('/education')}
       >
-        {(updateProject, { loading, error }) => (
+        {(updateEducation, { loading, error }) => (
           <>
             <Popup
               open={false}
@@ -112,87 +100,60 @@ class editproject extends React.Component<any, any> {
                         <form
                           onSubmit={e => {
                             e.preventDefault();
-                            updateProject({
+                            updateEducation({
                               variables: {
                                 id: this.props.data.User.id,
-                                projects: {
+                                education: {
                                   id: this.props.id,
-                                  name: name.value,
-                                  description: description.value,
-                                  Site: Site.value,
-                                  size: size.value,
-                                  status: status.value,
-                                  technology: technology.value,
-                                  startDate: startDate.value,
-
-                                  EndDate: EndDate.value,
-                                  Progress: Progress.value
+                                  school: school.value,
+                                  diploma: diploma.value,
+                                  university: university.value,
+                                  trainings: trainings.value,
+                                  certification: certification.value
                                 }
                               }
-                            });
-
-                            name.value = '';
-                            description.value = '';
-                            Site.value = '';
-                            technology.value = '';
-                            startDate.value = '';
-
-                            EndDate.value = '';
-                            status.value = '';
-                            size.value = '';
-                            Progress.value = '';
+                            }).then(close());
+                            school.value = '';
+                            diploma.value = '';
+                            university.value = '';
+                            trainings.value = '';
+                            certification.value = '';
                           }}
                         >
                           <br />
-                          <Divinput
+                          <DivInput
                             name="name"
-                            defaultvalue={this.props.nom}
+                            defaultvalue={this.props.school}
                             node={node => {
-                              name = node;
+                              school = node;
                             }}
                           />
-                          <Divinput
+                          <DivInput
                             name="description"
-                            defaultvalue={this.props.descr}
+                            defaultvalue={this.props.diploma}
                             node={node => {
-                              description = node;
+                              diploma = node;
                             }}
                           />
-                          <Divinput
+                          <DivInput
                             name="Site"
-                            defaultvalue={this.props.site}
+                            defaultvalue={this.props.university}
                             node={node => {
-                              Site = node;
+                              university = node;
                             }}
                           />
-                          <Divinput
+                          <DivInput
                             name="technology"
-                            defaultvalue={this.props.techno}
+                            defaultvalue={this.props.trainings}
                             node={node => {
-                              technology = node;
+                              trainings = node;
                             }}
                           />
-
-                          <Divinput name="size" defaultvalue={this.props.siz} />
-                          <Divinput
-                            name="size"
-                            defaultvalue={this.props.stat}
+                          <DivInput
+                            name="certification"
+                            defaultvalue={this.props.certification}
                             node={node => {
-                              size = node;
-                            }}
-                          />
-                          <Divinput
-                            name="Progress"
-                            defaultvalue={this.props.Prog}
-                            node={node => {
-                              Progress = node;
-                            }}
-                          />
-                          <Divinput
-                            name="status"
-                            defaultvalue={this.props.stat}
-                            node={node => {
-                              status = node;
+                              certification = node;
                             }}
                           />
 
@@ -221,11 +182,11 @@ class editproject extends React.Component<any, any> {
     );
   }
 }
-editproject.propTypes = {
+editEducation.propTypes = {
   auth: PropTypes.object.isRequired
 };
 const mapStateToProps = state => ({
   auth: state.auth
 });
 
-export default connect(mapStateToProps)(editproject);
+export default connect(mapStateToProps)(editEducation);
